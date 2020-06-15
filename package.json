@@ -1,0 +1,32 @@
+{
+  "name": "webpack-demo",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "webpack-dev-server --open --config webpack.dev.js",
+    "lib:babel": "babel src --out-dir lib --copy-files",
+    "lib:webpack": "webpack --config webpack.lib.js",
+    "lib": "npm-run-all -s lib:babel lib:webpack",
+    "build": "webpack --config webpack.prod.js",
+    "import:webpack": "webpack --config webpack.import.js",
+    "import": "npm-run-all -s lib import:webpack"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@babel/cli": "^7.10.1",
+    "@babel/core": "^7.10.2",
+    "@babel/preset-env": "^7.10.2",
+    "@babel/preset-react": "^7.10.1",
+    "clean-webpack-plugin": "^3.0.0",
+    "html-webpack-plugin": "^4.3.0",
+    "npm-run-all": "^4.1.5",
+    "webpack": "^4.43.0",
+    "webpack-cli": "^3.3.11",
+    "webpack-dev-server": "^3.11.0",
+    "workerize-loader": "^1.2.1"
+  }
+}
