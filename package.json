@@ -6,9 +6,10 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "webpack-dev-server --open --config webpack.dev.js",
+    "lib:clean": "rm -rf lib",
     "lib:babel": "babel src --out-dir lib --copy-files",
     "lib:webpack": "webpack --config webpack.lib.js",
-    "lib": "npm-run-all -s lib:babel lib:webpack",
+    "lib": "npm-run-all -s lib:clean lib:babel lib:webpack",
     "build": "webpack --config webpack.prod.js",
     "import:webpack": "webpack --config webpack.import.js",
     "import": "npm-run-all -s lib import:webpack"
