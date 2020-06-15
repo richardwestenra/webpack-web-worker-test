@@ -7,9 +7,10 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "webpack-dev-server --open --config webpack.dev.js",
     "lib:clean": "rm -rf lib",
-    "lib:babel": "babel src --out-dir lib --copy-files",
+    "lib:copy": "cp -rf src lib",
     "lib:webpack": "webpack --config webpack.lib.js",
-    "lib": "npm-run-all -s lib:clean lib:babel lib:webpack",
+    "lib:babel": "babel lib --out-dir lib --copy-files",
+    "lib": "npm-run-all -s lib:clean lib:copy lib:webpack lib:babel",
     "build": "webpack --config webpack.prod.js",
     "import:webpack": "webpack --config webpack.import.js",
     "import": "npm-run-all -s lib import:webpack"
