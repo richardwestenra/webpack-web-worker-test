@@ -13,6 +13,7 @@ module.exports = {
   ],
   output: {
     filename: 'main.js',
+    globalObject: 'this',
     path: path.resolve(__dirname, 'dist'),
   },
 };
