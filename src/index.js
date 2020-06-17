@@ -20,8 +20,7 @@ const taskPayloads = {
 const runTest = (name, tasks) => {
   const timer = getTime();
   promisify(tasks[name], taskPayloads[name]).then((response) => {
-    const p = getComponent('p', `${name}: ${timer()}ms`);
-    document.body.appendChild(p);
+    appendComponent('p', `${name}: ${timer()}ms`);
     console.log(name, JSON.parse(response));
   });
 };
@@ -30,9 +29,10 @@ const runTest = (name, tasks) => {
 const promisify = (fn, arg) => new Promise((resolve) => resolve(fn(arg)));
 
 // Make a new UI component
-const getComponent = (type, text) => {
+const appendComponent = (type, text, parent = document.body) => {
   const element = document.createElement(type);
   element.innerHTML = text;
+  document.body.appendChild(element);
   return element;
 }
 
@@ -47,27 +47,24 @@ console.time('worker setup');
 const instance = worker();
 console.timeEnd('worker setup');
 
-// Single-threaded tasks
-const syncButton = getComponent('button', 'Single-threaded');
-syncButton.addEventListener('click', () => {
-  runTest('expensive', workerTasks);
-  runTest('graph', workerTasks);
-  runTest('noOp', workerTasks);
-});
-document.body.appendChild(syncButton);
+// Run test tasks in regular single-threaded JS
+appendComponent('button', 'Single-threaded')
+  .addEventListener('click', () => {
+    runTest('expensive', workerTasks);
+    runTest('graph', workerTasks);
+    runTest('noOp', workerTasks);
+  });
 
-// Web-worker tasks
-const workerButton = getComponent('button', 'Web worker');
-workerButton.addEventListener('click', () => {
-  runTest('expensive', instance);
-  runTest('graph', instance);
-  runTest('noOp', instance);
-});
-document.body.appendChild(workerButton);
+// Run test tasks with a web-worker
+appendComponent('button', 'Web worker')
+  .addEventListener('click', () => {
+    runTest('expensive', instance);
+    runTest('graph', instance);
+    runTest('noOp', instance);
+  });
 
-// Running count
-const h1 = getComponent('h1', '');
-document.body.appendChild(h1);
+// Add synchronous running counter
+const h1 = appendComponent('h1', '');
 setInterval(() => {
   h1.innerHTML = `Time elapsed: ${performance.now()}`;
 }, 10);
