@@ -20,8 +20,9 @@ const taskPayloads = {
 const runTest = (name, tasks) => {
   const timer = getTime();
   promisify(tasks[name], taskPayloads[name]).then((response) => {
-    const p = getComponent('p', `${timer()} ${tasks[name]}: ${response}`);
+    const p = getComponent('p', `${name}: ${timer()}ms`);
     document.body.appendChild(p);
+    console.log(name, JSON.parse(response));
   });
 };
 
@@ -38,7 +39,7 @@ const getComponent = (type, text) => {
 // Calculate time elapsed between worker call and return
 const getTime = () => {
   const start = Date.now();
-  return () => `Time: ${Date.now() - start}.`;
+  return () => Date.now() - start;
 };
 
 // Initialise worker and time how long it takes
