@@ -3,6 +3,9 @@
   "version": "1.0.0",
   "description": "",
   "main": "lib/index.js",
+  "files": [
+    "lib"
+  ],
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "webpack-dev-server --open --config webpack.dev.js",
@@ -13,7 +16,8 @@
     "lib": "npm-run-all -s lib:clean lib:copy lib:webpack lib:babel",
     "build": "webpack --config webpack.prod.js",
     "import:webpack": "webpack --config webpack.import.js",
-    "import": "npm-run-all -s lib import:webpack"
+    "import": "npm-run-all -s lib import:webpack",
+    "prepublishOnly": "lib"
   },
   "keywords": [],
   "author": "",
