@@ -12,7 +12,7 @@
     "lib:clean": "rm -rf lib",
     "lib:copy": "cp -rf src lib",
     "lib:webpack": "webpack --config webpack.lib.js",
-    "lib:babel": "babel lib --out-dir lib --copy-files",
+    "lib:babel": "babel lib --out-dir lib",
     "lib": "npm-run-all -s lib:clean lib:copy lib:webpack lib:babel",
     "build": "webpack --config webpack.prod.js",
     "import:webpack": "webpack --config webpack.import.js",
