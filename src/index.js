@@ -2,7 +2,7 @@ import { mockState } from '@quantumblack/kedro-viz/lib/utils/state.mock';
 import { getVisibleNodes } from '@quantumblack/kedro-viz/lib/selectors/nodes';
 import { getVisibleEdges } from '@quantumblack/kedro-viz/lib/selectors/edges';
 import worker from './worker-setup';
-import { expensive, graph, noOp } from './worker';
+import * as workerTasks from './worker';
 
 const TIME = 1000;
 const state = {
@@ -10,64 +10,57 @@ const state = {
   edges: getVisibleEdges(mockState.lorem),
 };
 const payload = JSON.stringify(state);
+const taskPayloads = {
+  expensive: TIME,
+  graph: payload,
+  noOp: payload,
+};
 
-console.time('worker setup');
-const instance = worker();
-console.timeEnd('worker setup');
+// Test a task
+const runTest = (name, tasks) => {
+  const timer = getTime();
+  promisify(tasks[name], taskPayloads[name]).then((response) => {
+    const p = getComponent('p', `${timer()} ${tasks[name]}: ${response}`);
+    document.body.appendChild(p);
+  });
+};
+
+// Turn a regular function into a promise
+const promisify = (fn, arg) => new Promise((resolve) => resolve(fn(arg)));
 
 // Make a new UI component
-function getComponent(type, text) {
+const getComponent = (type, text) => {
   const element = document.createElement(type);
   element.innerHTML = text;
   return element;
 }
 
-// Turn a regular function into a promise
-const promisify = (fn, arg) => new Promise((resolve) => resolve(fn(arg)));
-
-const append = (name, value, time) => {
-  document.body.appendChild(getComponent('p', `${time} ${name}: ${value}`));
+// Calculate time elapsed between worker call and return
+const getTime = () => {
+  const start = Date.now();
+  return () => `Time: ${Date.now() - start}.`;
 };
 
+// Initialise worker and time how long it takes
+console.time('worker setup');
+const instance = worker();
+console.timeEnd('worker setup');
 
 // Single-threaded tasks
 const syncButton = getComponent('button', 'Single-threaded');
 syncButton.addEventListener('click', () => {
-  const start = Date.now();
-  const getTime = () => `Time: ${Date.now() - start}.`
-
-  promisify(expensive, TIME).then((count) => {
-    append('expensive', count, getTime());
-  });
-
-  promisify(graph, payload).then((response) => {
-    append('graph', response.length, getTime());
-  });
-
-  promisify(noOp, payload).then((response) => {
-    append('noOp', response.length, getTime());
-  });
+  runTest('expensive', workerTasks);
+  runTest('graph', workerTasks);
+  runTest('noOp', workerTasks);
 });
 document.body.appendChild(syncButton);
-
 
 // Web-worker tasks
 const workerButton = getComponent('button', 'Web worker');
 workerButton.addEventListener('click', () => {
-  const start = Date.now();
-  const getTime = () => `Time: ${Date.now() - start}.`
-
-  instance.expensive(TIME).then((count) => {
-    append('expensive', count, getTime());
-  });
-
-  instance.graph(payload).then((response) => {
-    append('graph', response.length, getTime());
-  });
-
-  instance.noOp(payload).then((response) => {
-    append('noOp', response.length, getTime());
-  });
+  runTest('expensive', instance);
+  runTest('graph', instance);
+  runTest('noOp', instance);
 });
 document.body.appendChild(workerButton);
 
