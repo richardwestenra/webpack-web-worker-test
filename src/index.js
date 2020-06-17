@@ -17,12 +17,11 @@ const taskPayloads = {
 };
 
 // Test a task
-const runTest = (name, tasks) => {
+const runTest = async (name, tasks) => {
   const timer = getTime();
-  promisify(tasks[name], taskPayloads[name]).then((response) => {
-    appendComponent('p', `${name}: ${timer()}ms`);
-    console.log(name, JSON.parse(response));
-  });
+  const response = await promisify(tasks[name], taskPayloads[name]);
+  appendComponent('p', `${name}: ${timer()}ms`);
+  console.log(name, JSON.parse(response));
 };
 
 // Turn a regular function into a promise
