@@ -31,7 +31,7 @@ const promisify = (fn, arg) => new Promise((resolve) => resolve(fn(arg)));
 const appendComponent = (type, text, parent = document.body) => {
   const element = document.createElement(type);
   element.innerHTML = text;
-  document.body.appendChild(element);
+  parent.appendChild(element);
   return element;
 }
 
