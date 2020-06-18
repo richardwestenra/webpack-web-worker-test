@@ -17,6 +17,7 @@
     "build": "webpack --config webpack.prod.js",
     "import:webpack": "webpack --config webpack.import.js",
     "import": "npm-run-all -s lib import:webpack",
+    "deploy": "./deploy.sh",
     "prepublishOnly": "lib"
   },
   "keywords": [],
